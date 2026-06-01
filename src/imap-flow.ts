@@ -1,12 +1,11 @@
 import { ImapFlow } from "imapflow";
 
 export const client = new ImapFlow({
-    host: 'mail.muximaboavida.co.ao',
+    host: "mail.grupoboavida.co.ao",
     port: 993,
     secure: true,
-
     auth: {
-        user: 'tickets@muximaboavida.co.ao',
-        pass: 'Angola@2026!#'
+        user: "bpm.suporte@grupoboavida.co.ao",
+        pass: 'GBV!d@2023bsuporte#'
     }
 });
