@@ -44,7 +44,6 @@ jobs:
               --name mail \
               --restart unless-stopped \
               -p 3007:3007 \
-              -v ~/mail/db.sqlite:/app/db.sqlite \
               mail-app
             rm mail-app.tar.gz
             echo "Deploy concluido"

@@ -30,7 +30,6 @@ sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$USER@$HOST" << 'EOF'
     --name mail \
     --restart unless-stopped \
     -p 3007:3007 \
-    -v ~/mail-data/db.sqlite:/app/db.sqlite \
     mail-app
   rm mail-app.tar.gz
   echo "Deploy concluido"
