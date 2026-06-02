@@ -10,7 +10,7 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.json ./
 COPY src/ ./src/
 RUN pnpm run build
-
+ 
 FROM node:20-slim
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
