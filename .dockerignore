@@ -5,4 +5,4 @@ dist
 *.md
 pnpm-debug.log*
 .env
-db.sqlite
+db.sqlite 
