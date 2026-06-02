@@ -57,6 +57,32 @@ function hasSupportKeyword(text: string): boolean {
 }
 
 /**
+ * Valida se o corpo do e-mail é válido, ou seja, se não veio vazio ou distorcido.
+ */
+function isBodyValid(body: string | undefined | null): boolean {
+  if (!body) return false;
+  const trimmed = body.trim();
+  if (trimmed.length === 0) return false;
+
+  // Evita strings contendo literais de erro comuns
+  if (trimmed === "undefined" || trimmed === "null") {
+    return false;
+  }
+
+  // Verifica se veio como HTML bruto (não convertido)
+  if (/<[a-z/][^>]*>/i.test(trimmed)) {
+    return false;
+  }
+
+  // Verifica se contém pelo menos um caractere alfanumérico para evitar strings distorcidas de caracteres especiais
+  if (!/[a-zA-Z0-9]/.test(trimmed)) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Analisa o assunto e corpo de um e-mail e retorna a categoria do sistema
  * mencionado, ou null se não for encontrado nenhum padrão relevante.
  *
@@ -76,13 +102,15 @@ export function parseEmailCategory(
   }
 
   const normalizedText = normalize(fullText);
+  const useBodyAsDescription = isBodyValid(body);
+  const bodyDescription = useBodyAsDescription ? body.trim() : null;
 
   // 2. Verifica se menciona Primavera ou Muxima
   for (const system of SYSTEM_KEYWORDS) {
     if (normalizedText.includes(normalize(system.keyword))) {
       return {
         category: system.category,
-        description: system.description,
+        description: bodyDescription || system.description,
       };
     }
   }
@@ -90,6 +118,6 @@ export function parseEmailCategory(
   // 3. Tem palavra-chave de suporte mas não é Primavera nem Muxima
   return {
     category: "Outros suportes / Serviços",
-    description: "Solicitação de suporte para sistema não identificado",
+    description: bodyDescription || "Solicitação de suporte para sistema não identificado",
   };
 }
