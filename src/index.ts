@@ -4,6 +4,7 @@ import { client } from './imap-flow.js';
 import { registerMail } from './register-mail.js';
 import { parseEmailCategory } from './get-category.js';
 import { sendApi } from './http.js';
+import { server } from './api.js';
 
 async function start() {
   await client.connect();
@@ -15,7 +16,7 @@ async function start() {
     try {
       const mailbox = client.mailbox as MailboxObject;
       const seq = mailbox.exists;
-      
+
       // 2. Garantimos que o 'source' está como true para trazer o conteúdo completo
       const message = await client.fetchOne(seq, {
         source: true,
@@ -27,9 +28,9 @@ async function start() {
 
       // 3. Fazer o parse do e-mail bruto (Buffer) para conseguir o texto limpo
       const parsedEmail = await simpleParser(message.source);
-      
+
       // O mailparser nos dá o texto puro em .text ou o HTML em .textAsHtml
-      const emailBody = parsedEmail.text || ''; 
+      const emailBody = parsedEmail.text || '';
 
       console.log('Novo e-mail recebido!');
       console.log('Assunto:', message.envelope.subject);
@@ -39,7 +40,7 @@ async function start() {
 
       // 4. Agora passamos o assunto E o corpo correto para a função de análise
       const formate = parseEmailCategory(
-        message.envelope.subject || '', 
+        message.envelope.subject || '',
         emailBody
       );
 
@@ -60,3 +61,4 @@ async function start() {
 }
 
 start();
+server 
