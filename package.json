@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon --watch src/index.ts",
     "build": "tsc",
-    "start": "npm run build && NODE_OPTIONS=\"--max-old-space-size=2048\" node dist/index.js",
+    "start": "npm run build && npx drizzle-kit push && node dist/index.js",
     "api": "npx tsx src/api.ts",
     "dev:api": "nodemon --watch src/api.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
