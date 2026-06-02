@@ -22,8 +22,7 @@ RUN apt-get update -qq && apt-get install -y -qq ca-certificates && rm -rf /var/
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY package.json ./
-
-RUN touch db.sqlite
+COPY db.sqlite ./
 
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 ENV PORT=3007
