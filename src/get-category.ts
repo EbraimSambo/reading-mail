@@ -1,7 +1,7 @@
 // emailCategoryParser.ts
 
 export interface EmailCategoryResult {
-  category: "Primavera" | "Muxima" | "Outros suportes";
+  category: "Primavera" | "Muxima" | "Outros suportes / Serviços";
   description: string;
 }
 
@@ -84,7 +84,7 @@ export function parseEmailCategory(
 
   // 3. Tem palavra-chave de suporte mas não é Primavera nem Muxima
   return {
-    category: "Outros suportes",
+    category: "Outros suportes / Serviços",
     description: "Solicitação de suporte para sistema não identificado",
   };
 }
