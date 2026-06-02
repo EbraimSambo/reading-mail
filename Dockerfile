@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:20-slim AS build
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -11,11 +11,13 @@ COPY tsconfig.json ./
 COPY src/ ./src/
 RUN pnpm run build
 
-FROM node:20-alpine
+FROM node:20-slim
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
+
+RUN apt-get update -qq && apt-get install -y -qq ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
