@@ -9,7 +9,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY tsconfig.json ./
 COPY src/ ./src/
+COPY drizzle.config.ts ./
 RUN pnpm run build
+RUN npx drizzle-kit push
  
 FROM node:20-slim
 
@@ -21,8 +23,8 @@ RUN apt-get update -qq && apt-get install -y -qq ca-certificates && rm -rf /var/
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/db.sqlite ./db.sqlite
 COPY package.json ./
-COPY db.sqlite ./
 
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 ENV PORT=3007
