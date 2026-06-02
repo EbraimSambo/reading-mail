@@ -21,7 +21,8 @@ sshpass -p "$PASS" scp -o StrictHostKeyChecking=no mail-app.tar.gz "$USER@$HOST:
 
 echo "=== Deploy no servidor ==="
 sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$USER@$HOST" << 'EOF'
-  cd ~
+  mkdir -p ~/mail-data
+  touch ~/mail-data/db.sqlite
   docker load < mail-app.tar.gz
   docker stop mail 2>/dev/null || true
   docker rm mail 2>/dev/null || true

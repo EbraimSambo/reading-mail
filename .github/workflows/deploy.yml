@@ -34,6 +34,8 @@ jobs:
           password: ${{ secrets.SERVER_PASS }}
           port: 22
           script: |
+            mkdir -p ~/mail
+            touch ~/mail/db.sqlite
             cd ~/mail
             docker load < mail-app.tar.gz
             docker stop mail || true
