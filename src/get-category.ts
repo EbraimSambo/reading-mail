@@ -16,7 +16,12 @@ const SUPPORT_KEYWORDS = [
   "permissoes",
   "permissões",
   "primavera",
-  "muxima"
+  "muxima",
+  "cadastramento",
+  "bloqueio",
+  "desbloqueio",
+  "servidor",
+  "configuração"
 ];
 
 // Sistemas conhecidos com suas categorias
