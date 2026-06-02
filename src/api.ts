@@ -18,6 +18,7 @@ app.get('/api/emails', async (req, res) => {
       .select()
       .from(usersTable)
       .orderBy(desc(usersTable.createdAt))
+
       .limit(limit)
       .offset(offset);
 
