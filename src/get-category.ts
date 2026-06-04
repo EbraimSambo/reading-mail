@@ -39,7 +39,9 @@ const SUPPORT_KEYWORDS = [
   "alteração",
   "configuração",
   "atualização",
-  "atualizações"
+  "atualizações",
+  "esqueci",
+  "preciso"
 ];
 
 // Sistemas conhecidos com suas categorias
