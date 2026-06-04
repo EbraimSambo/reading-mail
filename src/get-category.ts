@@ -10,6 +10,7 @@ const SUPPORT_KEYWORDS = [
   "solicitacao",
   "solicitação",
   "suporte",
+  "pedido",
   "pedido de suporte",
   "permissao",
   "permissão",
@@ -21,7 +22,24 @@ const SUPPORT_KEYWORDS = [
   "bloqueio",
   "desbloqueio",
   "servidor",
-  "configuração"
+  "configuração",
+  "dados",
+  "informação",
+  "informações",
+  "instalação",
+  "instalações",
+  "acessos",
+  "acesso",
+  "crm",
+  "CRM",
+  "cadastramento",
+  "criação",
+  "sistema",
+  "alteração",
+  "alteração",
+  "configuração",
+  "atualização",
+  "atualizações"
 ];
 
 // Sistemas conhecidos com suas categorias
