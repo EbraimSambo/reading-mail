@@ -104,6 +104,13 @@ function isBodyValid(body: string | undefined | null): boolean {
 }
 
 /**
+ * Remove "Atenciosamente" (ou variações) e todo o texto seguinte.
+ */
+function stripSignature(text: string): string {
+  return text.replace(/\s*Atenciosamente[^]*/i, '').trim();
+}
+
+/**
  * Analisa o assunto e corpo de um e-mail e retorna a categoria do sistema
  * mencionado, ou null se não for encontrado nenhum padrão relevante.
  *
@@ -115,7 +122,8 @@ export function parseEmailCategory(
   subject: string,
   body: string
 ): EmailCategoryResult | null {
-  const fullText = `${subject} ${body}`;
+  const cleanBody = stripSignature(body);
+  const fullText = `${subject} ${cleanBody}`;
 
   // 1. Verifica se há pelo menos uma palavra-chave de suporte/solicitação
   if (!hasSupportKeyword(fullText)) {
@@ -123,8 +131,8 @@ export function parseEmailCategory(
   }
 
   const normalizedText = normalize(fullText);
-  const useBodyAsDescription = isBodyValid(body);
-  const bodyDescription = useBodyAsDescription ? body.trim() : null;
+  const useBodyAsDescription = isBodyValid(cleanBody);
+  const bodyDescription = useBodyAsDescription ? cleanBody.trim() : null;
 
   // 2. Verifica se menciona Primavera ou Muxima
   for (const system of SYSTEM_KEYWORDS) {
