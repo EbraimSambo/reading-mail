@@ -5,8 +5,11 @@ interface Params {
     description: string;
     category: string;
 }
+
+const baseUrl = "https://api.muximaboavida.com/api/integracao/bpm/ticket";
+
 export async function sendApi(params: Params) {
-    const result = await axios.post('https://api.muximaboavida.com/api/integracao/bpm/ticket', {
+    const result = await axios.post(baseUrl, {
         "categoria": params.category,
         "descricao": params.description,
         "email_requisitante": params.email

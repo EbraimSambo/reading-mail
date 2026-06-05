@@ -86,19 +86,13 @@ function isBodyValid(body: string | undefined | null): boolean {
   if (trimmed.length === 0) return false;
 
   // Evita strings contendo literais de erro comuns
-  if (trimmed === "undefined" || trimmed === "null") {
-    return false;
-  }
+  if (trimmed === "undefined" || trimmed === "null") return false;
 
   // Verifica se veio como HTML bruto (não convertido)
-  if (/<[a-z/][^>]*>/i.test(trimmed)) {
-    return false;
-  }
+  if (/<[a-z/][^>]*>/i.test(trimmed)) return false
 
   // Verifica se contém pelo menos um caractere alfanumérico para evitar strings distorcidas de caracteres especiais
-  if (!/[a-zA-Z0-9]/.test(trimmed)) {
-    return false;
-  }
+  if (!/[a-zA-Z0-9]/.test(trimmed)) return false
 
   return true;
 }
@@ -126,9 +120,7 @@ export function parseEmailCategory(
   const fullText = `${subject} ${cleanBody}`;
 
   // 1. Verifica se há pelo menos uma palavra-chave de suporte/solicitação
-  if (!hasSupportKeyword(fullText)) {
-    return null;
-  }
+  if (!hasSupportKeyword(fullText)) return null;
 
   const normalizedText = normalize(fullText);
   const useBodyAsDescription = isBodyValid(cleanBody);

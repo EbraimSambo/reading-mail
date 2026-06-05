@@ -1,11 +1,17 @@
 import { ImapFlow } from "imapflow";
 
+const host = "mail.grupoboavida.co.ao"
+const port = 993
+const secure = true
+const user = "bpm.suporte@grupoboavida.co.ao";
+const pass = "GBV!d@2023bsuporte#";
+
 export const client = new ImapFlow({
-    host: "mail.grupoboavida.co.ao",
-    port: 993,
-    secure: true,
+    host,
+    port,
+    secure,
     auth: {
-        user: "bpm.suporte@grupoboavida.co.ao",
-        pass: 'GBV!d@2023bsuporte#'
+        user,
+        pass
     }
 });
