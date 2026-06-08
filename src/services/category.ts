@@ -1,11 +1,8 @@
-// emailCategoryParser.ts
-
 export interface EmailCategoryResult {
   category: "Primavera" | "Muxima" | "Outros sistemas / Serviços";
   description: string;
 }
 
-// Palavras-chave que indicam um pedido de suporte/permissão
 const SUPPORT_KEYWORDS = [
   "solicitacao",
   "solicitação",
@@ -18,7 +15,6 @@ const SUPPORT_KEYWORDS = [
   "permissões",
   "primavera",
   "muxima",
-  "Muxima",
   "cadastramento",
   "bloqueio",
   "desbloqueio",
@@ -31,22 +27,21 @@ const SUPPORT_KEYWORDS = [
   "instalações",
   "acessos",
   "acesso",
-  "crm",
-  "CRM",
-  "cadastramento",
   "criação",
   "sistema",
   "alteração",
-  "alteração",
-  "configuração",
   "atualização",
   "atualizações",
   "esqueci",
-  "preciso"
+  "preciso",
+  "crm",
 ];
 
-// Sistemas conhecidos com suas categorias
-const SYSTEM_KEYWORDS: { keyword: string; category: "Primavera" | "Muxima"; description: string }[] = [
+const SYSTEM_KEYWORDS: {
+  keyword: string;
+  category: "Primavera" | "Muxima";
+  description: string;
+}[] = [
   {
     keyword: "primavera",
     category: "Primavera",
@@ -59,9 +54,6 @@ const SYSTEM_KEYWORDS: { keyword: string; category: "Primavera" | "Muxima"; desc
   },
 ];
 
-/**
- * Normaliza texto: remove acentos, converte para minúsculas.
- */
 function normalize(text: string): string {
   return text
     .toLowerCase()
@@ -69,62 +61,27 @@ function normalize(text: string): string {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-/**
- * Verifica se o texto contém alguma palavra-chave de suporte.
- */
 function hasSupportKeyword(text: string): boolean {
   const normalized = normalize(text);
   return SUPPORT_KEYWORDS.some((kw) => normalized.includes(normalize(kw)));
 }
 
-/**
- * Valida se o corpo do e-mail é válido, ou seja, se não veio vazio ou distorcido.
- */
 function isBodyValid(body: string | undefined | null): boolean {
   if (!body) return false;
   const trimmed = body.trim();
   if (trimmed.length === 0) return false;
-
-  // Evita strings contendo literais de erro comuns
   if (trimmed === "undefined" || trimmed === "null") return false;
-
-  // Verifica se veio como HTML bruto (não convertido)
   if (/<[a-z/][^>]*>/i.test(trimmed)) return false;
-
-  // Verifica se contém pelo menos um caractere alfanumérico para evitar strings distorcidas de caracteres especiais
   if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
-
   return true;
 }
 
-/**
- * Remove assinaturas e rodapés do corpo do e-mail:
- * - "Atenciosamente" (e variações) e tudo o que vier depois.
- * - Blocos separados por traços (---) que contenham "Requisitante:".
- *
- * Exemplos de rodapé removidos:
- *   ------------------------
- *   Requisitante: fulano@empresa.com
- */
 function stripSignature(text: string): string {
-  // Remove "Atenciosamente" e tudo depois
   let cleaned = text.replace(/\s*Atenciosamente[\s\S]*/i, "");
-
-  // Remove separador de traços seguido de "Requisitante:"
-  // Cobre tanto traços antes quanto o bloco inteiro após o separador
   cleaned = cleaned.replace(/\s*-{3,}[\s\S]*?Requisitante\s*:[\s\S]*/i, "");
-
   return cleaned.trim();
 }
 
-/**
- * Analisa o assunto e corpo de um e-mail e retorna a categoria do sistema
- * mencionado, ou null se não for encontrado nenhum padrão relevante.
- *
- * @param subject - Assunto do e-mail
- * @param body    - Corpo do e-mail
- * @returns EmailCategoryResult ou null
- */
 export function parseEmailCategory(
   subject: string,
   body: string
@@ -132,14 +89,12 @@ export function parseEmailCategory(
   const cleanBody = stripSignature(body);
   const fullText = `${subject} ${cleanBody}`;
 
-  // 1. Verifica se há pelo menos uma palavra-chave de suporte/solicitação
   if (!hasSupportKeyword(fullText)) return null;
 
   const normalizedText = normalize(fullText);
   const useBodyAsDescription = isBodyValid(cleanBody);
   const bodyDescription = useBodyAsDescription ? cleanBody.trim() : null;
 
-  // 2. Verifica se menciona Primavera ou Muxima
   for (const system of SYSTEM_KEYWORDS) {
     if (normalizedText.includes(normalize(system.keyword))) {
       return {
@@ -149,9 +104,9 @@ export function parseEmailCategory(
     }
   }
 
-  // 3. Tem palavra-chave de suporte mas não é Primavera nem Muxima
   return {
     category: "Outros sistemas / Serviços",
-    description: bodyDescription || "Solicitação de suporte para sistema não identificado",
+    description:
+      bodyDescription || "Solicitação de suporte para sistema não identificado",
   };
 }
