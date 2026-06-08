@@ -11,7 +11,6 @@ export const usersTable = sqliteTable("receivers_mails", {
   createdAt: text().notNull().$default(() => new Date().toISOString())
 });
 
-
 export const dbClient = drizzle(createClient({
   url: 'file:./db.sqlite',
 }));
