@@ -89,19 +89,32 @@ function isBodyValid(body: string | undefined | null): boolean {
   if (trimmed === "undefined" || trimmed === "null") return false;
 
   // Verifica se veio como HTML bruto (não convertido)
-  if (/<[a-z/][^>]*>/i.test(trimmed)) return false
+  if (/<[a-z/][^>]*>/i.test(trimmed)) return false;
 
   // Verifica se contém pelo menos um caractere alfanumérico para evitar strings distorcidas de caracteres especiais
-  if (!/[a-zA-Z0-9]/.test(trimmed)) return false
+  if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
 
   return true;
 }
 
 /**
- * Remove "Atenciosamente" (ou variações) e todo o texto seguinte.
+ * Remove assinaturas e rodapés do corpo do e-mail:
+ * - "Atenciosamente" (e variações) e tudo o que vier depois.
+ * - Blocos separados por traços (---) que contenham "Requisitante:".
+ *
+ * Exemplos de rodapé removidos:
+ *   ------------------------
+ *   Requisitante: fulano@empresa.com
  */
 function stripSignature(text: string): string {
-  return text.replace(/\s*Atenciosamente[^]*/i, '').trim();
+  // Remove "Atenciosamente" e tudo depois
+  let cleaned = text.replace(/\s*Atenciosamente[\s\S]*/i, "");
+
+  // Remove separador de traços seguido de "Requisitante:"
+  // Cobre tanto traços antes quanto o bloco inteiro após o separador
+  cleaned = cleaned.replace(/\s*-{3,}[\s\S]*?Requisitante\s*:[\s\S]*/i, "");
+
+  return cleaned.trim();
 }
 
 /**

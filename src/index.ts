@@ -17,7 +17,6 @@ async function start() {
       const mailbox = client.mailbox as MailboxObject;
       const seq = mailbox.exists;
 
-      // 2. Garantimos que o 'source' está como true para trazer o conteúdo completo
       const message = await client.fetchOne(seq, {
         source: true,
         envelope: true
@@ -26,11 +25,19 @@ async function start() {
       if (!message || !message.source) return;
       if (!message.envelope) return;
 
-      // 3. Fazer o parse do e-mail bruto (Buffer) para conseguir o texto limpo
       const parsedEmail = await simpleParser(message.source);
-
-      // O mailparser nos dá o texto puro em .text ou o HTML em .textAsHtml
       const emailBody = parsedEmail.text || '';
+
+      // ✅ Detectar se é uma resposta (reply)
+      const isReply =
+        !!parsedEmail.headers.get('in-reply-to') ||
+        !!parsedEmail.headers.get('references') ||
+        /^(re|res|fw|fwd|enc)\s*:/i.test(message.envelope.subject || '');
+
+      if (isReply) {
+        console.log('Email ignorado: é uma resposta/encaminhamento.');
+        return;
+      }
 
       console.log('Novo e-mail recebido!');
       console.log('Assunto:', message.envelope.subject);
@@ -38,7 +45,6 @@ async function start() {
 
       await registerMail(message.envelope, message.id as string);
 
-      // 4. Agora passamos o assunto E o corpo correto para a função de análise
       const formate = parseEmailCategory(
         message.envelope.subject || '',
         emailBody
