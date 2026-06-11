@@ -54,6 +54,8 @@ const SYSTEM_KEYWORDS: {
   },
 ];
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
 function normalize(text: string): string {
   return text
     .toLowerCase()
@@ -71,21 +73,57 @@ function isBodyValid(body: string | undefined | null): boolean {
   const trimmed = body.trim();
   if (trimmed.length === 0) return false;
   if (trimmed === "undefined" || trimmed === "null") return false;
+  // Rejeita se parecer HTML
   if (/<[a-z/][^>]*>/i.test(trimmed)) return false;
+  // Rejeita se não tiver nenhum alfanumérico
   if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
   return true;
 }
 
+/**
+ * Remove a assinatura do corpo do e-mail, preservando o conteúdo principal.
+ *
+ * Lida com padrões como:
+ *   - Sequências longas de traços/underscores (ex: "--------------------")
+ *   - Bloco "Requisitante: ..." após os traços
+ *   - Fechos comuns apenas quando aparecem nas últimas 3 linhas
+ */
 function stripSignature(text: string): string {
-  // Remove tudo a partir de uma linha composta só por traços ou underscores (ex: --- ou ___)
-  let cleaned = text.replace(/(^|\n)[^\S\n]*[-_]{2,}[^\S\n]*(\n|$)[\s\S]*/i, "");
-  // Remove a partir de fechos comuns
-  cleaned = cleaned.replace(/\n?[^\S\n]*(Atenciosamente|Com os melhores cumprimentos|Cumprimentos|Obrigado|Regards)\b[\s\S]*/i, "");
-  // Remove a partir de "Requisitante:" caso ainda reste
+  // 1. Remove tudo a partir de uma linha composta APENAS por traços ou underscores
+  //    (mínimo 3 caracteres, suporta sequências longas como "--------------------")
+  let cleaned = text.replace(
+    /(^|\n)[^\S\n]*[-_]{3,}[^\S\n]*(\n|$)[\s\S]*/i,
+    ""
+  );
+
+  // 2. Remove a partir de "Requisitante:" caso ainda reste (ex: sem linha de traços)
   cleaned = cleaned.replace(/\n?[^\S\n]*Requisitante\s*:[\s\S]*/i, "");
-  // Remove linhas em branco excessivas no final
+
+  // 3. Remove fechos comuns APENAS se estiverem nas últimas 3 linhas
+  //    (evita remover "Com os melhores cumprimentos" no meio do corpo)
+  const closingPattern =
+    /^\s*(Atenciosamente|Com os melhores cumprimentos|Cumprimentos|Obrigado|Regards)\s*$/i;
+
+  const lines = cleaned.split("\n");
+  let cutIndex = -1;
+  const searchFrom = Math.max(0, lines.length - 3);
+
+  for (let i = searchFrom; i < lines.length; i++) {
+    if (closingPattern.test(lines[i] ?? "")) {
+      cutIndex = i;
+      break;
+    }
+  }
+
+  if (cutIndex !== -1) {
+    cleaned = lines.slice(0, cutIndex).join("\n");
+  }
+
+  // 4. Remove espaços/linhas em branco finais
   return cleaned.replace(/\s+$/, "").trim();
 }
+
+// ─── Export principal ────────────────────────────────────────────────────────
 
 export function parseEmailCategory(
   subject: string,
@@ -112,6 +150,7 @@ export function parseEmailCategory(
   return {
     category: "Outros sistemas / Serviços",
     description:
-      bodyDescription || "Solicitação de suporte para sistema não identificado",
+      bodyDescription ||
+      "Solicitação de suporte para sistema não identificado",
   };
 }
