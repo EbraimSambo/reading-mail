@@ -1,8 +1,5 @@
 import { ImapFlow } from "imapflow";
-
-function getEnv(key: string, fallback: string): string {
-  return process.env[key] ?? fallback;
-}
+import { getEnv } from "../config/env.js";
 
 const host = getEnv("IMAP_HOST", "mail.grupoboavida.co.ao");
 const port = Number(process.env.IMAP_PORT ?? "993");

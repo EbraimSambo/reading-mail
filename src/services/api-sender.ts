@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getEnv } from "../config/env.js";
 
 export interface TicketPayload {
   email: string;
@@ -6,9 +7,7 @@ export interface TicketPayload {
   category: string;
 }
 
-const baseUrl =
-  process.env.BPM_API_URL ??
-  "https://api.muximaboavida.com/api/integracao/bpm/ticket";
+const baseUrl = getEnv("BPM_API_URL", "https://api.muximaboavida.com/api/integracao/bpm/ticket");
 
 export async function sendTicket(payload: TicketPayload) {
   try {
