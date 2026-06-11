@@ -77,13 +77,14 @@ function isBodyValid(body: string | undefined | null): boolean {
 }
 
 function stripSignature(text: string): string {
-  // Remove tudo a partir de linha com só traços (---) ou underscores (___)
-  let cleaned = text.replace(/\n[\s]*[-_]{2,}[\s\S]*/i, "");
-  // Remove a partir de saudações/fechos comuns
-  cleaned = cleaned.replace(/\s*(Atenciosamente|Com os melhores cumprimentos|Cumprimentos|Obrigado|Regards)[\s\S]*/i, "");
+  // Remove tudo a partir de uma linha composta só por traços ou underscores (ex: --- ou ___)
+  let cleaned = text.replace(/(^|\n)[^\S\n]*[-_]{2,}[^\S\n]*(\n|$)[\s\S]*/i, "");
+  // Remove a partir de fechos comuns
+  cleaned = cleaned.replace(/\n?[^\S\n]*(Atenciosamente|Com os melhores cumprimentos|Cumprimentos|Obrigado|Regards)\b[\s\S]*/i, "");
   // Remove a partir de "Requisitante:" caso ainda reste
-  cleaned = cleaned.replace(/\s*Requisitante\s*:[\s\S]*/i, "");
-  return cleaned.trim();
+  cleaned = cleaned.replace(/\n?[^\S\n]*Requisitante\s*:[\s\S]*/i, "");
+  // Remove linhas em branco excessivas no final
+  return cleaned.replace(/\s+$/, "").trim();
 }
 
 export function parseEmailCategory(
