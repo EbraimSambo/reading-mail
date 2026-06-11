@@ -14,6 +14,7 @@ const SUPPORT_KEYWORDS = [
   "permissoes",
   "permissões",
   "primavera",
+  "prima vera",
   "muxima",
   "cadastramento",
   "bloqueio",
