@@ -77,8 +77,12 @@ function isBodyValid(body: string | undefined | null): boolean {
 }
 
 function stripSignature(text: string): string {
-  let cleaned = text.replace(/\s*Atenciosamente[\s\S]*/i, "");
-  cleaned = cleaned.replace(/\s*-{3,}[\s\S]*?Requisitante\s*:[\s\S]*/i, "");
+  // Remove tudo a partir de linha com só traços (---) ou underscores (___)
+  let cleaned = text.replace(/\n[\s]*[-_]{2,}[\s\S]*/i, "");
+  // Remove a partir de saudações/fechos comuns
+  cleaned = cleaned.replace(/\s*(Atenciosamente|Com os melhores cumprimentos|Cumprimentos|Obrigado|Regards)[\s\S]*/i, "");
+  // Remove a partir de "Requisitante:" caso ainda reste
+  cleaned = cleaned.replace(/\s*Requisitante\s*:[\s\S]*/i, "");
   return cleaned.trim();
 }
 
