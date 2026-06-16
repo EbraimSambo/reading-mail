@@ -89,7 +89,7 @@ function isBodyValid(body: string | undefined | null): boolean {
  *   - Bloco "Requisitante: ..." após os traços
  *   - Fechos comuns apenas quando aparecem nas últimas 3 linhas
  */
-function stripSignature(text: string): string {
+export function stripSignature(text: string): string {
   // 1. Remove tudo a partir de uma linha composta APENAS por traços ou underscores
   //    (mínimo 3 caracteres, suporta sequências longas como "--------------------")
   let cleaned = text.replace(

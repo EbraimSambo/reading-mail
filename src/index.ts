@@ -1,6 +1,6 @@
 import type { MailboxObject } from "imapflow";
 import { simpleParser } from "mailparser";
-import { imapClient } from "./services/imap.js";
+import { imapClient } from "./services/imap-flow.js";
 import "./api.js";
 import { registerMail } from "./services/mail-register.js";
 import { parseEmailCategory } from "./services/category.js";
@@ -31,22 +31,15 @@ async function start() {
         !!parsed.headers.get("references") ||
         /^(re|res|fw|fwd|enc)\s*:/i.test(subject);
 
-      if (isReply) {
-        console.log("E-mail ignorado: é uma resposta/encaminhamento.");
-        return;
-      }
+      if (isReply) return;
 
-      console.log("Novo e-mail recebido —", subject);
 
       await registerMail(message.envelope, String(message.id));
 
       const category = parseEmailCategory(subject, body);
-      if (!category) {
-        console.log("Nenhuma categoria identificada.");
-        return;
-      }
 
-      console.log("Categoria:", category.category);
+      if (!category) return;
+
       await sendTicket({
         email: message.envelope.from?.[0]?.address || "",
         description: category.description,

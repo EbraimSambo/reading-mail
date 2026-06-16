@@ -10,7 +10,7 @@
     "start": "npm run build && npx drizzle-kit push && node dist/index.js",
     "api": "npx tsx src/api.ts",
     "dev:api": "nodemon --watch src/api.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest --run"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,8 @@
     "drizzle-kit": "^0.31.10",
     "mailparser": "^3.9.8",
     "tsx": "^4.22.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
   },
   "dependencies": {
     "@libsql/client": "^0.17.3",
