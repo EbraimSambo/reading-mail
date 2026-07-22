@@ -35,14 +35,10 @@ async function start() {
 
       await registerMail(message.envelope, String(message.id));
 
-      // Não cria ticket se houver Cc ou múltiplos destinatários no "To"
-      const hasCc = (message.envelope.cc?.length ?? 0) > 0;
-      const hasMultipleTo = (message.envelope.to?.length ?? 0) > 1;
-
-      if (hasCc || hasMultipleTo) {
-        console.log(
-          `Ticket não criado (múltiplos destinatários - Cc: ${hasCc}, To: ${hasMultipleTo}): ${subject}`
-        );
+      // Não cria ticket para e-mails com Cc (múltiplos destinatários)
+      const hasCc = !!message.envelope.cc && message.envelope.cc.length > 0;
+      if (hasCc) {
+        console.log(`Ticket não criado (e-mail possui Cc): ${subject}`);
         return;
       }
 
