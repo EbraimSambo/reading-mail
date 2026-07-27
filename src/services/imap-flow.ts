@@ -12,4 +12,4 @@ export const imapClient = new ImapFlow({
   port: Number(port),
   secure,
   auth: { user, pass },
-});
+}); 
