@@ -35,12 +35,12 @@ async function start() {
 
       await registerMail(message.envelope, String(message.id));
 
-      // Não cria ticket para e-mails com Cc (múltiplos destinatários)
-      const hasCc = !!message.envelope.cc && message.envelope.cc.length > 0;
-      if (hasCc) {
-        console.log(`Ticket não criado (e-mail possui Cc): ${subject}`);
-        return;
-      }
+      // // Não cria ticket para e-mails com Cc (múltiplos destinatários)
+      // const hasCc = !!message.envelope.cc && message.envelope.cc.length > 0;
+      // if (hasCc) {
+      //   console.log(`Ticket não criado (e-mail possui Cc): ${subject}`);
+      //   return;
+      // }
 
       const category = parseEmailCategory(subject, body);
 
